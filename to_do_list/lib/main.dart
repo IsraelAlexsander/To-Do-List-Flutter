@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:to_do_list/screens/home_screen.dart';
 import 'package:to_do_list/screens/login_screen.dart';
 import 'package:to_do_list/screens/signup_screen.dart';
 
@@ -12,7 +14,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,7 @@ class MyApp extends StatelessWidget {
       title: "ToDo List",
       theme:
           ThemeData(primarySwatch: Colors.indigo, primaryColor: Colors.indigo),
-      home: SignupScreen(),
+      home: _auth.currentUser != null ? HomeScreen() : LoginScreen(),
     );
   }
 }
