@@ -36,7 +36,7 @@ class DatabaseService {
     return await todoCollection.doc(id).update({'completed': completed});
   }
 
-  Future<void> deleteTodoItem(String id, bool completed) async {
+  Future<void> deleteTodoItem(String id) async {
     return await todoCollection.doc(id).delete();
   }
 
@@ -49,6 +49,11 @@ class DatabaseService {
   }
 
   Stream<List<ToDo>> get completedTodos {
+    if (user == null) {
+      print("Usuário não att");
+    } else {
+      print("Deu bom");
+    }
     return todoCollection
         .where('uid', isEqualTo: user!.uid)
         .where('completed', isEqualTo: true)
@@ -62,7 +67,7 @@ class DatabaseService {
           id: doc.id,
           title: doc['title'] ?? '',
           description: doc['description'] ?? '',
-          finish: doc['finish'] ?? '',
+          finish: doc['finishIn'] ?? '',
           completed: doc['completed'] ?? false,
           timestamp: doc['createdAt'] ?? '');
     }).toList();

@@ -15,6 +15,7 @@ class SignupScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Color(0xFF1d2630),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Color(0xDD1d2630),
         foregroundColor: Colors.white,
         title: Text("Crie sua conta"),

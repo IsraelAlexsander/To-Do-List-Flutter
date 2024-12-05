@@ -1,124 +1,112 @@
-import 'dart:ffi';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:to_do_list/components/completed_cards.dart';
-import 'package:to_do_list/components/pending_cards.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:to_do_list/model/todo_model.dart';
-import 'package:to_do_list/screens/login_screen.dart';
-import 'package:to_do_list/services/auth_services.dart';
 import 'package:to_do_list/services/database.services.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class PendingCards extends StatefulWidget {
+  const PendingCards({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<PendingCards> createState() => _PendingCardsState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  int _buttonIndex = 0;
+class _PendingCardsState extends State<PendingCards> {
+  User? user = FirebaseAuth.instance.currentUser;
+  late String uid;
 
-  final _widgets = [
-    PendingCards(),
-    CompletedCards(),
-  ];
+  final DatabaseService _dbService = DatabaseService();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    uid = FirebaseAuth.instance.currentUser!.uid;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFF1d2630),
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: Color(0xFF1d2630),
-        foregroundColor: Colors.white,
-        title: Text("ToDo List"),
-        actions: [
-          IconButton(
-              onPressed: () async {
-                await AuthServices().signOut();
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => LoginScreen()));
-              },
-              icon: Icon(Icons.exit_to_app))
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                InkWell(
+    return StreamBuilder<List<ToDo>>(
+      stream: _dbService.todos,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          List<ToDo> todos = snapshot.data!;
+          return ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: todos.length,
+            itemBuilder: (context, index) {
+              ToDo todo = todos[index];
+              return Container(
+                margin: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
-                  onTap: () {
-                    setState(() {
-                      _buttonIndex = 0;
-                    });
-                  },
-                  child: Container(
-                    height: 50,
-                    width: MediaQuery.of(context).size.width / 2.2,
-                    decoration: BoxDecoration(
-                      color: _buttonIndex == 0 ? Colors.indigo : Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "Pendentes",
-                        style: TextStyle(
-                            fontSize: _buttonIndex == 0 ? 16 : 14,
-                            fontWeight: FontWeight.w500,
-                            color: _buttonIndex == 0
-                                ? Colors.white
-                                : Colors.black38),
-                      ),
-                    ),
-                  ),
                 ),
-                InkWell(
-                  borderRadius: BorderRadius.circular(10),
-                  onTap: () {
-                    setState(() {
-                      _buttonIndex = 1;
-                    });
-                  },
-                  child: Container(
-                    height: 50,
-                    width: MediaQuery.of(context).size.width / 2.2,
-                    decoration: BoxDecoration(
-                      color: _buttonIndex == 1 ? Colors.indigo : Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "Completos",
-                        style: TextStyle(
-                            fontSize: _buttonIndex == 1 ? 16 : 14,
-                            fontWeight: FontWeight.w500,
-                            color: _buttonIndex == 1
-                                ? Colors.white
-                                : Colors.black38),
+                child: Slidable(
+                    endActionPane:
+                        ActionPane(motion: DrawerMotion(), children: [
+                      SlidableAction(
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white,
+                        label: "Completar",
+                        icon: Icons.done,
+                        onPressed: (context) {
+                          _dbService.completeTodoItem(todo.id, true);
+                        },
+                      )
+                    ]),
+                    startActionPane:
+                        ActionPane(motion: DrawerMotion(), children: [
+                      SlidableAction(
+                        backgroundColor: Colors.amber,
+                        foregroundColor: Colors.white,
+                        label: "Editar",
+                        icon: Icons.edit,
+                        onPressed: (context) async {
+                          _showTaskDialog(context, todo: todo);
+                        },
                       ),
-                    ),
-                  ),
-                )
-              ],
+                      SlidableAction(
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                        label: "Apagar",
+                        icon: Icons.delete,
+                        onPressed: (context) async {
+                          await _dbService.deleteTodoItem(todo.id);
+                        },
+                      )
+                    ]),
+                    key: ValueKey(todo.id),
+                    child: ListTile(
+                      title: Text(
+                        todo.title,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      subtitle: Text(
+                        todo.description,
+                      ),
+                      trailing: Text(
+                        todo.finish,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    )),
+              );
+            },
+          );
+        } else {
+          return Center(
+            child: CircularProgressIndicator(
+              color: Colors.white,
             ),
-            SizedBox(height: 30),
-            _widgets[_buttonIndex],
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.white,
-        child: Icon(Icons.add),
-        onPressed: () {
-          _showTaskDialog(context);
-        },
-      ),
+          );
+        }
+      },
     );
   }
 
