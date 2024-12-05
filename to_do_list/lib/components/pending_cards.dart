@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:to_do_list/model/todo_model.dart';
 import 'package:to_do_list/services/database.services.dart';
-import 'package:to_do_list/utils/dateItuls.dart';
+import 'package:to_do_list/utils/dateUtils.dart';
 
 class PendingCards extends StatefulWidget {
   const PendingCards({super.key});

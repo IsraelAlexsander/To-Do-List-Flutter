@@ -8,7 +8,7 @@ import 'package:to_do_list/model/todo_model.dart';
 import 'package:to_do_list/screens/login_screen.dart';
 import 'package:to_do_list/services/auth_services.dart';
 import 'package:to_do_list/services/database.services.dart';
-import 'package:to_do_list/utils/dateItuls.dart';
+import 'package:to_do_list/utils/dateUtils.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
