@@ -5,10 +5,18 @@ import 'package:to_do_list/screens/home_screen.dart';
 import 'package:to_do_list/screens/login_screen.dart';
 import 'package:to_do_list/services/auth_services.dart';
 
-class SignupScreen extends StatelessWidget {
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
+
+  @override
+  State<SignupScreen> createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
   final AuthServices _auth = AuthServices();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -38,33 +46,46 @@ class SignupScreen extends StatelessWidget {
                 controller: _emailController,
                 style: TextStyle(color: Colors.white),
                 decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: Colors.white60),
-                    ),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    labelText: "Email",
-                    labelStyle: TextStyle(
-                      color: Colors.white60,
-                    )),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: Colors.white60),
+                  ),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  labelText: "Email",
+                  labelStyle: TextStyle(
+                    color: Colors.white60,
+                  ),
+                ),
+                keyboardType: TextInputType.emailAddress,
               ),
               SizedBox(height: 20),
               TextField(
                 controller: _passwordController,
                 style: TextStyle(color: Colors.white),
-                obscureText: true,
+                obscureText: !_isPasswordVisible,
                 decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide(color: Colors.white60),
-                    ),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    labelText: "Senha",
-                    labelStyle: TextStyle(
-                      color: Colors.white60,
-                    )),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: Colors.white60),
+                  ),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  labelText: "Senha",
+                  labelStyle: TextStyle(
+                    color: Colors.white60,
+                  ),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _isPasswordVisible = !_isPasswordVisible;
+                      });
+                    },
+                    icon: Icon(_isPasswordVisible
+                        ? Icons.visibility
+                        : Icons.visibility_off),
+                  ),
+                ),
               ),
               SizedBox(height: 50),
               SizedBox(
