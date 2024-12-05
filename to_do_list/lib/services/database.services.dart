@@ -10,7 +10,7 @@ class DatabaseService {
   User? user = FirebaseAuth.instance.currentUser;
 
   Future<DocumentReference> addTodoItem(
-      String title, String description, DateTime finishIn) async {
+      String title, String description, String finishIn) async {
     return await todoCollection.add({
       'uid': user!.uid,
       'title': title,
@@ -22,7 +22,7 @@ class DatabaseService {
   }
 
   Future<void> updateTodoItem(
-      String id, String title, String description, DateTime finishIn) async {
+      String id, String title, String description, String finishIn) async {
     final updateTodoCollection =
         FirebaseFirestore.instance.collection("todo").doc(id);
     return await updateTodoCollection.update({

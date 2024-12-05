@@ -4,7 +4,7 @@ class ToDo {
   final String id;
   final String title;
   final String description;
-  final DateTime finish;
+  final String finish;
   final bool completed;
   final Timestamp timestamp;
 

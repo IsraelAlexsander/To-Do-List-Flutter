@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do_list/model/todo_model.dart';
@@ -122,16 +124,98 @@ class _HomeScreenState extends State<HomeScreen> {
         TextEditingController(text: todo?.title);
     final TextEditingController _descriptionController =
         TextEditingController(text: todo?.description);
-    final TextEditingController _finishIn = TextEditingController(
-        text: todo?.finish != null ? _formatDate(todo!.finish!) : '');
+    final TextEditingController _finishInController =
+        TextEditingController(text: todo?.finish != null ? todo?.finish : '');
     final DatabaseService _dbService = DatabaseService();
+
+    Future<void> _selectDate() async {
+      DateTime? _data = await showDatePicker(
+          context: context,
+          firstDate: DateTime.now(),
+          lastDate: DateTime(2100));
+
+      if (_data != null) {
+        setState(() {
+          _finishInController.text = _formatDate(_data);
+        });
+      }
+    }
 
     showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             backgroundColor: Colors.white,
-            title: Text(todo == null ? "Criar Tarefa" : "Editar Tarefa"),
+            title: Text(
+              todo == null ? "Criar Tarefa" : "Editar Tarefa",
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            content: SingleChildScrollView(
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: _titleController,
+                      decoration: InputDecoration(
+                        labelText: "Título",
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    TextField(
+                      controller: _descriptionController,
+                      decoration: InputDecoration(
+                        labelText: "Descrição",
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    TextField(
+                      controller: _finishInController,
+                      decoration: InputDecoration(
+                        labelText: "Termina em",
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(Icons.calendar_today),
+                      ),
+                      readOnly: true,
+                      onTap: () {
+                        _selectDate();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text("Cancelar"),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.indigo,
+                    foregroundColor: Colors.white),
+                onPressed: () async {
+                  if (todo == null) {
+                    await _dbService.addTodoItem(_titleController.text,
+                        _descriptionController.text, _finishInController.text);
+                  } else {
+                    await _dbService.updateTodoItem(
+                        todo.id,
+                        _titleController.text,
+                        _descriptionController.text,
+                        _finishInController.text);
+                  }
+                  Navigator.pop(context);
+                },
+                child: Text(todo == null ? "Criar" : "Editar"),
+              ),
+            ],
           );
         });
   }
