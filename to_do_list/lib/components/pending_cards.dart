@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:to_do_list/model/todo_model.dart';
 import 'package:to_do_list/services/database.services.dart';
+import 'package:to_do_list/utils/dateItuls.dart';
 
 class PendingCards extends StatefulWidget {
   const PendingCards({super.key});
@@ -41,7 +42,9 @@ class _PendingCardsState extends State<PendingCards> {
               return Container(
                 margin: EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: UtilsDate.isLate(todo.finish)
+                      ? Colors.orangeAccent
+                      : Colors.white,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Slidable(
@@ -127,7 +130,7 @@ class _PendingCardsState extends State<PendingCards> {
 
       if (_data != null) {
         setState(() {
-          _finishInController.text = _formatDate(_data);
+          _finishInController.text = UtilsDate.formatDate(_data);
         });
       }
     }
@@ -209,11 +212,5 @@ class _PendingCardsState extends State<PendingCards> {
             ],
           );
         });
-  }
-
-  String _formatDate(DateTime date) {
-    return "${date.day.toString().padLeft(2, '0')}/"
-        "${date.month.toString().padLeft(2, '0')}/"
-        "${date.year}";
   }
 }

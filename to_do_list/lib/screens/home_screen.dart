@@ -8,6 +8,7 @@ import 'package:to_do_list/model/todo_model.dart';
 import 'package:to_do_list/screens/login_screen.dart';
 import 'package:to_do_list/services/auth_services.dart';
 import 'package:to_do_list/services/database.services.dart';
+import 'package:to_do_list/utils/dateItuls.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -134,12 +135,12 @@ class _HomeScreenState extends State<HomeScreen> {
     Future<void> _selectDate() async {
       DateTime? _data = await showDatePicker(
           context: context,
-          firstDate: DateTime.now(),
+          firstDate: DateTime(1900),
           lastDate: DateTime(2100));
 
       if (_data != null) {
         setState(() {
-          _finishInController.text = _formatDate(_data);
+          _finishInController.text = UtilsDate.formatDate(_data);
         });
       }
     }
@@ -221,11 +222,5 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           );
         });
-  }
-
-  String _formatDate(DateTime date) {
-    return "${date.day.toString().padLeft(2, '0')}/"
-        "${date.month.toString().padLeft(2, '0')}/"
-        "${date.year}";
   }
 }
