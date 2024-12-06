@@ -26,7 +26,6 @@ class _LoginScreenState extends State<LoginScreen> {
         automaticallyImplyLeading: false,
         backgroundColor: Color(0xDD1d2630),
         foregroundColor: Colors.white,
-        title: Text("Entrar"),
       ),
       body: SingleChildScrollView(
         child: Padding(

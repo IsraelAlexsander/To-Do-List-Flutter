@@ -26,7 +26,6 @@ class _SignupScreenState extends State<SignupScreen> {
         automaticallyImplyLeading: false,
         backgroundColor: Color(0xDD1d2630),
         foregroundColor: Colors.white,
-        title: Text("Crie sua conta"),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -35,7 +34,7 @@ class _SignupScreenState extends State<SignupScreen> {
             children: [
               SizedBox(height: 50),
               Text(
-                "Registre-se aqui",
+                "Crie sua conta",
                 style: TextStyle(
                     fontSize: 25,
                     fontWeight: FontWeight.w500,
