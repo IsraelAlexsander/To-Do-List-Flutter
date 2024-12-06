@@ -7,7 +7,8 @@ class UtilsDate {
 
   static DateTime formatString(String date) {
     List<String> parts = date.split('/');
-    int day = int.parse(parts[0]);
+    int day = int.parse(parts[0]) +
+        1; //Assim o dia atual não será cnosiderado atrasado
     int month = int.parse(parts[1]);
     int year = int.parse(parts[2]);
 

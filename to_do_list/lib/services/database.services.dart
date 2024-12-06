@@ -49,11 +49,6 @@ class DatabaseService {
   }
 
   Stream<List<ToDo>> get completedTodos {
-    if (user == null) {
-      print("Usuário não att");
-    } else {
-      print("Deu bom");
-    }
     return todoCollection
         .where('uid', isEqualTo: user!.uid)
         .where('completed', isEqualTo: true)
