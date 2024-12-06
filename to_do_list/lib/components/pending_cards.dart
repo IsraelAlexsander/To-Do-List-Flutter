@@ -5,6 +5,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:to_do_list/model/todo_model.dart';
 import 'package:to_do_list/services/database.services.dart';
 import 'package:to_do_list/utils/dateUtils.dart';
+import 'package:to_do_list/utils/orderUtils.dart';
 
 class PendingCards extends StatefulWidget {
   const PendingCards({super.key});
@@ -33,6 +34,7 @@ class _PendingCardsState extends State<PendingCards> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           List<ToDo> todos = snapshot.data!;
+          OrderUtils.orderTodos(todos);
           return ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),

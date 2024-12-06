@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do_list/model/todo_model.dart';
+import 'package:to_do_list/utils/dateUtils.dart';
 
 class DatabaseService {
   final CollectionReference todoCollection =
@@ -45,7 +46,12 @@ class DatabaseService {
         .where('uid', isEqualTo: user!.uid)
         .where('completed', isEqualTo: false)
         .snapshots()
-        .map(_todoListFromSnapshot);
+        .map((snapshot) {
+      List<ToDo> todos = _todoListFromSnapshot(snapshot);
+      todos
+          .sort((a, b) => a.finish.compareTo(b.finish)); // Ordenando localmente
+      return todos;
+    });
   }
 
   Stream<List<ToDo>> get completedTodos {

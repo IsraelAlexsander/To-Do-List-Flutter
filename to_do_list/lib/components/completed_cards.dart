@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:to_do_list/model/todo_model.dart';
 import 'package:to_do_list/services/database.services.dart';
+import 'package:to_do_list/utils/orderUtils.dart';
 
 class CompletedCards extends StatefulWidget {
   const CompletedCards({super.key});
@@ -32,6 +33,7 @@ class _CompletedCardsState extends State<CompletedCards> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           List<ToDo> todos = snapshot.data!;
+          OrderUtils.orderTodos(todos);
           return ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
