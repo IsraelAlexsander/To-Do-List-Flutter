@@ -86,6 +86,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
+              SizedBox(height: 5),
+              TextButton(
+                onPressed: () {
+                  _showResetPasswordDialog(context);
+                },
+                child: Text(
+                  "Resetar senha",
+                  style: TextStyle(color: Colors.white, fontSize: 14),
+                ),
+              ),
               SizedBox(height: 50),
               SizedBox(
                 height: 50,
@@ -99,6 +109,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => HomeScreen()));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Usuário ou senha invalidos!"),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
                       }
                     },
                     child: Text(
@@ -113,20 +130,80 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: 20),
               TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SignupScreen()));
-                  },
-                  child: Text(
-                    "Criar conta",
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ))
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SignupScreen()));
+                },
+                child: Text(
+                  "Criar conta",
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                ),
+              ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  void _showResetPasswordDialog(BuildContext context) {
+    final TextEditingController _emailDialogController =
+        TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text(
+            "Redefinir Senha",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: TextField(
+            controller: _emailDialogController,
+            decoration: InputDecoration(
+              labelText: "Digite seu e-mail",
+              border: OutlineInputBorder(),
+            ),
+            keyboardType: TextInputType.emailAddress,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("Cancelar"),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.indigo,
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () async {
+                if (_emailDialogController.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("Por favor, insira o e-mail."),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+
+                await _auth.resetPassword(_emailDialogController.text);
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("E-mail de recuperação enviado!"),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              },
+              child: Text("Enviar"),
+            ),
+          ],
+        );
+      },
     );
   }
 }
