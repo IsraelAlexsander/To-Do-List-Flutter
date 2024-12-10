@@ -5,6 +5,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:to_do_list/model/todo_model.dart';
 import 'package:to_do_list/services/database.services.dart';
 import 'package:to_do_list/utils/orderUtils.dart';
+import 'package:to_do_list/utils/snackBarUtils.dart';
 
 class CompletedCards extends StatefulWidget {
   const CompletedCards({super.key});
@@ -54,6 +55,8 @@ class _CompletedCardsState extends State<CompletedCards> {
                       label: "Apagar",
                       icon: Icons.delete,
                       onPressed: (context) async {
+                        SnackBarUtils.show(
+                            context, "Tarefa excluida", Colors.red);
                         await _dbService.deleteTodoItem(todo.id);
                       },
                     )
