@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:to_do_list/screens/home_screen.dart';
 import 'package:to_do_list/screens/signup_screen.dart';
 import 'package:to_do_list/services/auth_services.dart';
+import 'package:to_do_list/utils/snackBarUtils.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -110,12 +111,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             MaterialPageRoute(
                                 builder: (context) => HomeScreen()));
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Usuário ou senha invalidos!"),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
+                        SnackBarUtils.show(
+                            context, "Usuário ou senha invalidos!", Colors.red);
                       }
                     },
                     child: Text(
@@ -181,23 +178,15 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               onPressed: () async {
                 if (_emailDialogController.text.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text("Por favor, insira o e-mail."),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
+                  SnackBarUtils.show(
+                      context, "Por favor, insira o e-mail.", Colors.red);
                   return;
                 }
 
                 await _auth.resetPassword(_emailDialogController.text);
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text("E-mail de recuperação enviado!"),
-                    backgroundColor: Colors.green,
-                  ),
-                );
+                SnackBarUtils.show(
+                    context, "E-mail de recuperação enviado!", Colors.green);
               },
               child: Text("Enviar"),
             ),

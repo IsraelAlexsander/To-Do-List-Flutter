@@ -9,6 +9,7 @@ import 'package:to_do_list/screens/login_screen.dart';
 import 'package:to_do_list/services/auth_services.dart';
 import 'package:to_do_list/services/database.services.dart';
 import 'package:to_do_list/utils/dateUtils.dart';
+import 'package:to_do_list/utils/snackBarUtils.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -208,13 +209,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (_finishInController.text.isEmpty &&
                       _titleController.text.isEmpty &&
                       _descriptionController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                            "Preencha todos os campos antes de continuar!"),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
+                    SnackBarUtils.show(
+                        context,
+                        "Preencha todos os campos antes de continuar!",
+                        Colors.red);
                     return;
                   }
 
@@ -225,12 +223,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       _finishInController.text,
                     );
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text("Tarefa criada!"),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
+                    SnackBarUtils.show(context, "Tarefa criada!", Colors.green);
                   } else {
                     await _dbService.updateTodoItem(
                       todo.id,
@@ -238,12 +231,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       _descriptionController.text,
                       _finishInController.text,
                     );
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text("Tarefa editada!"),
-                        backgroundColor: Colors.amber,
-                      ),
-                    );
+                    SnackBarUtils.show(
+                        context, "Tarefa editada!", Colors.amber);
                   }
 
                   Navigator.pop(context);

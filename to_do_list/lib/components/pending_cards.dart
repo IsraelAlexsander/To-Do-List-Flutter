@@ -6,6 +6,7 @@ import 'package:to_do_list/model/todo_model.dart';
 import 'package:to_do_list/services/database.services.dart';
 import 'package:to_do_list/utils/dateUtils.dart';
 import 'package:to_do_list/utils/orderUtils.dart';
+import 'package:to_do_list/utils/snackBarUtils.dart';
 
 class PendingCards extends StatefulWidget {
   const PendingCards({super.key});
@@ -59,6 +60,8 @@ class _PendingCardsState extends State<PendingCards> {
                         icon: Icons.done,
                         onPressed: (context) {
                           _dbService.completeTodoItem(todo.id, true);
+                          SnackBarUtils.show(
+                              context, "Tarefa Completada", Colors.green);
                         },
                       )
                     ]),
@@ -79,6 +82,8 @@ class _PendingCardsState extends State<PendingCards> {
                         label: "Apagar",
                         icon: Icons.delete,
                         onPressed: (context) async {
+                          SnackBarUtils.show(
+                              context, "Tarefa excluida", Colors.red);
                           await _dbService.deleteTodoItem(todo.id);
                         },
                       )
@@ -199,13 +204,10 @@ class _PendingCardsState extends State<PendingCards> {
                   if (_finishInController.text.isEmpty &&
                       _titleController.text.isEmpty &&
                       _descriptionController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                            "Preencha todos os campos antes de continuar!"),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
+                    SnackBarUtils.show(
+                        context,
+                        "Preencha todos os campos antes de continuar!",
+                        Colors.red);
                     return;
                   }
 
@@ -216,12 +218,7 @@ class _PendingCardsState extends State<PendingCards> {
                       _finishInController.text,
                     );
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text("Tarefa criada!"),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
+                    SnackBarUtils.show(context, "Tarefa criada!", Colors.green);
                   } else {
                     await _dbService.updateTodoItem(
                       todo.id,
@@ -229,12 +226,8 @@ class _PendingCardsState extends State<PendingCards> {
                       _descriptionController.text,
                       _finishInController.text,
                     );
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text("Tarefa editada!"),
-                        backgroundColor: Colors.amber,
-                      ),
-                    );
+                    SnackBarUtils.show(
+                        context, "Tarefa editada!", Colors.amber);
                   }
 
                   Navigator.pop(context);
