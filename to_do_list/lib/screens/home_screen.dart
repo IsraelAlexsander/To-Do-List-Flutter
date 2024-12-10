@@ -205,16 +205,47 @@ class _HomeScreenState extends State<HomeScreen> {
                     backgroundColor: Colors.indigo,
                     foregroundColor: Colors.white),
                 onPressed: () async {
+                  if (_finishInController.text.isEmpty &&
+                      _titleController.text.isEmpty &&
+                      _descriptionController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                            "Preencha todos os campos antes de continuar!"),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+
                   if (todo == null) {
-                    await _dbService.addTodoItem(_titleController.text,
-                        _descriptionController.text, _finishInController.text);
+                    await _dbService.addTodoItem(
+                      _titleController.text,
+                      _descriptionController.text,
+                      _finishInController.text,
+                    );
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Tarefa criada!"),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
                   } else {
                     await _dbService.updateTodoItem(
-                        todo.id,
-                        _titleController.text,
-                        _descriptionController.text,
-                        _finishInController.text);
+                      todo.id,
+                      _titleController.text,
+                      _descriptionController.text,
+                      _finishInController.text,
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Tarefa editada!"),
+                        backgroundColor: Colors.amber,
+                      ),
+                    );
                   }
+
                   Navigator.pop(context);
                 },
                 child: Text(todo == null ? "Criar" : "Editar"),

@@ -124,16 +124,15 @@ class _PendingCardsState extends State<PendingCards> {
         TextEditingController(text: todo?.finish != null ? todo?.finish : '');
     final DatabaseService _dbService = DatabaseService();
 
-    Future<void> _selectDate() async {
+    Future<void> _selectDate(BuildContext dialogContext) async {
       DateTime? _data = await showDatePicker(
-          context: context,
-          firstDate: DateTime.now(),
-          lastDate: DateTime(2100));
+        context: dialogContext,
+        firstDate: DateTime.now(),
+        lastDate: DateTime(2100),
+      );
 
       if (_data != null) {
-        setState(() {
-          _finishInController.text = UtilsDate.formatDate(_data);
-        });
+        _finishInController.text = UtilsDate.formatDate(_data);
       }
     }
 
@@ -178,7 +177,7 @@ class _PendingCardsState extends State<PendingCards> {
                       ),
                       readOnly: true,
                       onTap: () {
-                        _selectDate();
+                        _selectDate(context);
                       },
                     ),
                   ],
@@ -197,16 +196,47 @@ class _PendingCardsState extends State<PendingCards> {
                     backgroundColor: Colors.indigo,
                     foregroundColor: Colors.white),
                 onPressed: () async {
+                  if (_finishInController.text.isEmpty &&
+                      _titleController.text.isEmpty &&
+                      _descriptionController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                            "Preencha todos os campos antes de continuar!"),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+
                   if (todo == null) {
-                    await _dbService.addTodoItem(_titleController.text,
-                        _descriptionController.text, _finishInController.text);
+                    await _dbService.addTodoItem(
+                      _titleController.text,
+                      _descriptionController.text,
+                      _finishInController.text,
+                    );
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Tarefa criada!"),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
                   } else {
                     await _dbService.updateTodoItem(
-                        todo.id,
-                        _titleController.text,
-                        _descriptionController.text,
-                        _finishInController.text);
+                      todo.id,
+                      _titleController.text,
+                      _descriptionController.text,
+                      _finishInController.text,
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Tarefa editada!"),
+                        backgroundColor: Colors.amber,
+                      ),
+                    );
                   }
+
                   Navigator.pop(context);
                 },
                 child: Text(todo == null ? "Criar" : "Editar"),
