@@ -92,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   _showResetPasswordDialog(context);
                 },
                 child: Text(
-                  "Resetar senha",
+                  "Redefinir senha",
                   style: TextStyle(color: Colors.white, fontSize: 14),
                 ),
               ),
